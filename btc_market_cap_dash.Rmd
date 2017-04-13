@@ -1,0 +1,66 @@
+---
+title: "BTC Market Cap"
+author: Scott Goley
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    theme: default
+    vertical_layout: scroll
+---
+
+```{r setup, include=FALSE}
+library(Quandl)
+library(scales)
+library(ggplot2)
+library(highcharter)
+
+
+bitstamp <- Quandl("BCHARTS/BITSTAMPUSD")
+btce <- Quandl("BCHARTS/BTCEUSD")
+mktcp <- Quandl("BCHAIN/MKTCP")
+
+mktcp$Week <- as.Date(cut(mktcp$Date,breaks="week"))
+mktcp$Month <- as.Date(cut(mktcp$Date,breaks="month"))
+
+
+```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+### Input Variables
+
+```{r}
+
+selectInput('dateperiod',
+            label = 'Time Period',
+            choices = c(),
+            selected = 'daily'
+)
+
+reactive(
+)
+
+```
+
+Column
+-----------------------------------------------------------------------
+
+### Chart B
+
+I've been following bitcoin for years and as a professional data analyst, I think it's helpful to put the latest headlines of bitcoin into some historical context
+
+
+```{r}
+
+
+
+plotOutput(hchart()
+  
+)
+
+
+
+
+
+```
