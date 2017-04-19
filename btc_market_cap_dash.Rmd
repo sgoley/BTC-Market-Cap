@@ -4,24 +4,28 @@ author: Scott Goley
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
-    theme: default
+    theme: journal
     vertical_layout: scroll
 ---
 
 ```{r setup, include=FALSE}
+
 library(Quandl)
 library(scales)
 library(ggplot2)
 library(highcharter)
-
+library(dplyr)
+library(magrittr)
+library(xts)
 
 bitstamp <- Quandl("BCHARTS/BITSTAMPUSD")
 btce <- Quandl("BCHARTS/BTCEUSD")
 mktcp <- Quandl("BCHAIN/MKTCP")
 
-mktcp$Week <- as.Date(cut(mktcp$Date,breaks="week"))
-mktcp$Month <- as.Date(cut(mktcp$Date,breaks="month"))
-
+mktcp %>%
+  rename(Daily = Date) -> mktcp
+mktcp$Weekly <- as.Date(cut(mktcp$Daily,breaks="week"))
+mktcp$Monthly <- as.Date(cut(mktcp$Daily,breaks="month"))
 
 ```
 
@@ -34,33 +38,27 @@ Inputs {.sidebar}
 
 selectInput('dateperiod',
             label = 'Time Period',
-            choices = c(),
-            selected = 'daily'
+            choices = c("Daily","Weekly","Monthly"),
+            selected = 'Daily'
 )
 
-reactive(
-)
+period_frame <- reactive({ mktcp[,c(input$dateperiod,"Value")] %>% set_colnames(c("Date","Value"))
+})
+
+
 
 ```
 
 Column
 -----------------------------------------------------------------------
 
-### Chart B
-
-I've been following bitcoin for years and as a professional data analyst, I think it's helpful to put the latest headlines of bitcoin into some historical context
+### Bitcoin Market Cap
 
 
 ```{r}
 
-
-
-plotOutput(hchart()
-  
-)
-
-
-
-
+renderHighchart(hchart(xts(period_frame()$Value,order.by = period_frame()$Date)) %>%
+             hc_add_theme(hc_theme_538())
+           )
 
 ```

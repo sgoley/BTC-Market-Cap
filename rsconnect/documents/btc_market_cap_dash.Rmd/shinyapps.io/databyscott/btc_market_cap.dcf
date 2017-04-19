@@ -1,0 +1,10 @@
+name: btc_market_cap
+title: BTC Market Cap
+account: databyscott
+server: shinyapps.io
+appId: 172918
+bundleId: 792697
+url: https://databyscott.shinyapps.io/btc_market_cap/
+when: 1492481430.34366
+asMultiple: FALSE
+asStatic: FALSE
